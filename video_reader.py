@@ -343,7 +343,7 @@ def write_res_to_file(video_path, filename):
                 f.write(str(i) + ',')
             f.write('\n')
             res_s_n8.clear()
-    cv.waiiKey(-1)
+    cv.waitKey(-1)
 
 
 video_path_n8 = "video_-8.avi"
@@ -366,7 +366,7 @@ video_path_8 = "video_8.avi"
 str_name_8 = "stream_8.txt"
 
 
-write_res_to_file(video_path_n8, str_name_n8)
+# write_res_to_file(video_path_n8, str_name_n8)
 write_res_to_file(video_path_n6, str_name_n6)
 write_res_to_file(video_path_n4, str_name_n4)
 write_res_to_file(video_path_n2, str_name_n2)
