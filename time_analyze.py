@@ -50,26 +50,25 @@ filename_n4 = "data/record_data-4.txt"
 filename_n6 = "data/record_data-6.txt"
 
 filename_t_s = "data/record3.txt"
+file_stream_n8 = "stream_n8_1.txt"
+file_stream_n6 = "stream_n6_1.txt"
+file_stream_n4 = "stream_n4_1.txt"
+file_stream_n2 = "stream_n2_1.txt"
+file_stream_0 = "stream_0_1.txt"
+file_stream_2 = "stream_2_1.txt"
+file_stream_4 = "stream_4_1.txt"
+file_stream_6 = "stream_6_1.txt"
+file_stream_8 = "stream_8_1.txt"
 
-file_stream_n8 = "stream_n8.txt"
-file_stream_n6 = "stream_n6.txt"
-file_stream_n4 = "stream_n4.txt"
-file_stream_n2 = "stream_n2.txt"
-file_stream_0 = "stream_0.txt"
-file_stream_2 = "stream_2.txt"
-file_stream_4 = "stream_4.txt"
-file_stream_6 = "stream_6.txt"
-file_stream_8 = "stream_8.txt"
 
-
-# x_0, y_0, delta_v_0 = read_data_from_file(filename_0)
-# x_2, y_2, delta_v_2 = read_data_from_file(filename_2)
-# x_4, y_4, delta_v_4 = read_data_from_file(filename_4)
-# x_6, y_6, delta_v_6 = read_data_from_file(filename_6)
-# x_8, y_8, delta_v_8 = read_data_from_file(filename_8)
-# x_n2, y_n2, delta_v_n2 = read_data_from_file(filename_n2)
-# x_n4, y_n4, delta_v_n4 = read_data_from_file(filename_n4)
-# x_n6, y_n6, delta_v_n6 = read_data_from_file(filename_n6)
+x_0, y_0, delta_v_0 = read_data_from_file(filename_0)
+x_2, y_2, delta_v_2 = read_data_from_file(filename_2)
+x_4, y_4, delta_v_4 = read_data_from_file(filename_4)
+x_6, y_6, delta_v_6 = read_data_from_file(filename_6)
+x_8, y_8, delta_v_8 = read_data_from_file(filename_8)
+x_n2, y_n2, delta_v_n2 = read_data_from_file(filename_n2)
+x_n4, y_n4, delta_v_n4 = read_data_from_file(filename_n4)
+x_n6, y_n6, delta_v_n6 = read_data_from_file(filename_n6)
 #
 # x_ts, y_ts, delta_v_ts = read_data_from_file(filename_t_s)
 
@@ -83,34 +82,34 @@ x_stream_4, y_stream_4, delta_stream_4 = read_data_from_file(file_stream_4)
 x_stream_6, y_stream_6, delta_stream_6 = read_data_from_file(file_stream_6)
 x_stream_8, y_stream_8, delta_stream_8 = read_data_from_file(file_stream_8)
 
-x_i_stream = range(0, len(delta_stream_n8))
-plt.plot(x_i_stream, delta_stream_n8)
-plt.show()
-
-plt.plot(x_i_stream, delta_stream_n6)
-plt.show()
-
-plt.plot(x_i_stream, delta_stream_n4)
-plt.show()
-
-plt.plot(x_i_stream, delta_stream_n2)
-plt.show()
-
-plt.plot(x_i_stream, delta_stream_0)
-plt.show()
-
-plt.plot(x_i_stream, delta_stream_2)
-plt.show()
-
-plt.plot(x_i_stream, delta_stream_4)
-plt.show()
-
-plt.plot(x_i_stream, delta_stream_6)
-plt.show()
-
-plt.plot(x_i_stream, delta_stream_8)
-
-plt.show()
+# x_i_stream = range(0, len(delta_stream_n8))
+# plt.plot(x_i_stream, delta_stream_n8)
+# plt.show()
+#
+# plt.plot(x_i_stream, delta_stream_n6)
+# plt.show()
+#
+# plt.plot(x_i_stream, delta_stream_n4)
+# plt.show()
+#
+# plt.plot(x_i_stream, delta_stream_n2)
+# plt.show()
+#
+# plt.plot(x_i_stream, delta_stream_0)
+# plt.show()
+#
+# plt.plot(x_i_stream, delta_stream_2)
+# plt.show()
+#
+# plt.plot(x_i_stream, delta_stream_4)
+# plt.show()
+#
+# plt.plot(x_i_stream, delta_stream_6)
+# plt.show()
+#
+# plt.plot(x_i_stream, delta_stream_8)
+#
+# plt.show()
 
 # L = len(delta_stream_8)  # 信号长度
 # N = np.power(2, np.ceil(np.log2(L)))  # 下一个最近二次幂
@@ -212,10 +211,10 @@ def cal_per_mean_std(dist, t=1):
 def cal_mean_std(ls_0):
     df = pd.DataFrame(ls_0, columns=['value'])
     u = df['value'].mean()
-    print(u)
+    # print(u)
     # 计算标准差
-    std = df['value'].std()
-    print(std)
+    std = df['value'].std(ddof=1)
+    # print(std)
     return u, std
 # res = kstest(df, 't', (u, std))
 # print(res)
@@ -227,7 +226,7 @@ def three_sigma(ls_0):
     df = pd.DataFrame(ls_0, columns=['value'])
     error = df[np.abs(df['value'] - u) > 2 * std]
     # 剔除异常值，保留正常的数据
-    data_c = df[np.abs(df['value'] - u) <= 2 * std]
+    data_c = df[np.abs(df['value'] - u) < 3 * std]
     return data_c
 
 
@@ -241,49 +240,133 @@ mean_stream_4, std_stream_4 = cal_mean_std(delta_stream_4)
 mean_stream_6, std_stream_6 = cal_mean_std(delta_stream_6)
 mean_stream_8, std_stream_8 = cal_mean_std(delta_stream_8)
 
-print(mean_stream_n8, std_stream_n8)
-print(mean_stream_n6, std_stream_n6)
-print(mean_stream_n4, std_stream_n4)
-print(mean_stream_n2, std_stream_n2)
-print(mean_stream_0, std_stream_0)
-print(mean_stream_2, std_stream_2)
-print(mean_stream_4, std_stream_4)
-print(mean_stream_6, std_stream_6)
+# print(mean_stream_n8, std_stream_n8)
+# print(mean_stream_n6, std_stream_n6)
+# print(mean_stream_n4, std_stream_n4)
+# print(mean_stream_n2, std_stream_n2)
+# print(mean_stream_0, std_stream_0)
+# print(mean_stream_2, std_stream_2)
+# print(mean_stream_4, std_stream_4)
+# print(mean_stream_6, std_stream_6)
 
 u_n8 = round(mean_stream_n8, 2)
+#
+# fixed_n8 = three_sigma(delta_stream_n8)
+# fixed_n6 = three_sigma(delta_stream_n6)
+# fixed_n4 = three_sigma(delta_stream_n4)
+# fixed_n2 = three_sigma(delta_stream_n2)
+# fixed_0 = three_sigma(delta_stream_0)
+# fixed_2 = three_sigma(delta_stream_2)
+# fixed_4 = three_sigma(delta_stream_4)
+# fixed_6 = three_sigma(delta_stream_6)
+# fixed_8 = three_sigma(delta_stream_8)
 
-fixed_n8 = three_sigma(delta_stream_n8)
-fixed_n6 = three_sigma(delta_stream_n6)
-fixed_n4 = three_sigma(delta_stream_n4)
-fixed_n2 = three_sigma(delta_stream_n2)
-fixed_0 = three_sigma(delta_stream_0)
-fixed_2 = three_sigma(delta_stream_2)
-fixed_4 = three_sigma(delta_stream_4)
-fixed_6 = three_sigma(delta_stream_6)
-fixed_8 = three_sigma(delta_stream_8)
+# fixed_mean_n8, fixed_std_n8 = cal_mean_std(fixed_n8)
+# fixed_mean_n6, fixed_std_n6 = cal_mean_std(fixed_n6)
+# fixed_mean_n4, fixed_std_n4 = cal_mean_std(fixed_n4)
+# fixed_mean_n2, fixed_std_n2 = cal_mean_std(fixed_n2)
+# fixed_mean_0, fixed_std_0 = cal_mean_std(fixed_0)
+# fixed_mean_2, fixed_std_2 = cal_mean_std(fixed_2)
+# fixed_mean_4, fixed_std_4 = cal_mean_std(fixed_4)
+# fixed_mean_6, fixed_std_6 = cal_mean_std(fixed_6)
+# fixed_mean_8, fixed_std_8 = cal_mean_std(fixed_8)
 
-fixed_mean_n8, fixed_std_n8 = cal_mean_std(fixed_n8)
-fixed_mean_n6, fixed_std_n6 = cal_mean_std(fixed_n6)
-fixed_mean_n4, fixed_std_n4 = cal_mean_std(fixed_n4)
-fixed_mean_n2, fixed_std_n2 = cal_mean_std(fixed_n2)
-fixed_mean_0, fixed_std_0 = cal_mean_std(fixed_0)
-fixed_mean_2, fixed_std_2 = cal_mean_std(fixed_2)
-fixed_mean_4, fixed_std_4 = cal_mean_std(fixed_4)
-fixed_mean_6, fixed_std_6 = cal_mean_std(fixed_6)
-fixed_mean_8, fixed_std_8 = cal_mean_std(fixed_8)
+# print(fixed_mean_n8, fixed_std_n8)
+# print(fixed_mean_n6, fixed_std_n6)
+# print(fixed_mean_n6, fixed_std_n6)
+# print(fixed_mean_n4, fixed_std_n4)
+# print(fixed_mean_n2, fixed_std_n2)
+# print(fixed_mean_0, fixed_std_0)
+# print(fixed_mean_2, fixed_std_2)
+# print(fixed_mean_4, fixed_std_4)
+# print(fixed_mean_6, fixed_std_6)
+# print(fixed_mean_8, fixed_std_8)
 
-print(fixed_mean_n8, fixed_std_n8)
-print(fixed_mean_n6, fixed_std_n6)
-print(fixed_mean_n6, fixed_std_n6)
-print(fixed_mean_n4, fixed_std_n4)
-print(fixed_mean_n2, fixed_std_n2)
-print(fixed_mean_0, fixed_std_0)
-print(fixed_mean_2, fixed_std_2)
-print(fixed_mean_4, fixed_std_4)
-print(fixed_mean_6, fixed_std_6)
-print(fixed_mean_8, fixed_std_8)
+# fixed_n8_1 = three_sigma(fixed_n8)
+# fixed_mean_n8_1, fixed_std_n8_1 = cal_mean_std(fixed_n8_1)
+# print(fixed_mean_n8_1, fixed_std_n8_1)
+#
+# fixed_n8_2 = three_sigma(fixed_n8_1)
+# fixed_mean_n8_2, fixed_std_n8_2 = cal_mean_std(fixed_n8_2)
+# print(fixed_mean_n8_2, fixed_std_n8_2)
+#
+# fixed_n8_3 = three_sigma(fixed_n8_2)
+# fixed_mean_n8_3, fixed_std_n8_3 = cal_mean_std(fixed_n8_3)
+# print(fixed_mean_n8_3, fixed_std_n8_3)
+#
+# fixed_n8_4 = three_sigma(fixed_n8_3)
+# fixed_mean_n8_4, fixed_std_n8_4 = cal_mean_std(fixed_n8_4)
+# print(fixed_mean_n8_4, fixed_std_n8_4)
+fn8 = three_sigma(delta_stream_n8)
+fn6 = three_sigma(delta_stream_n6)
+fn4 = three_sigma(delta_stream_n4)
+fn2 = three_sigma(delta_stream_n2)
+f0 = three_sigma(delta_stream_0)
+f2 = three_sigma(delta_stream_2)
+f4 = three_sigma(delta_stream_4)
+f6 = three_sigma(delta_stream_6)
+f8 = three_sigma(delta_stream_8)
 
+ifn6 = three_sigma(delta_v_n6)
+ifn4 = three_sigma(delta_v_n4)
+ifn2 = three_sigma(delta_v_2)
+if0 = three_sigma(delta_v_0)
+if2 = three_sigma(delta_v_2)
+if4 = three_sigma(delta_v_4)
+if6 = three_sigma(delta_v_6)
+if8 = three_sigma(delta_v_8)
 
+for i in range(0, 30):
+    # fn8 = three_sigma(fn8)
+    fn6 = three_sigma(ifn6)
+    fn4 = three_sigma(ifn4)
+    fn2 = three_sigma(ifn2)
+    f0 = three_sigma(if0)
+    f2 = three_sigma(if2)
+    f4 = three_sigma(if4)
+    f6 = three_sigma(if6)
+    f8 = three_sigma(if8)
+
+    # print(i)
+plt_data = []
+fixed_mean_n8_loop, fixed_std_n8_loop = cal_mean_std(fn8)
+print(fixed_mean_n8_loop, fixed_std_n8_loop)
+fixed_mean_n6_loop, fixed_std_n6_loop = cal_mean_std(fn6)
+print(fixed_mean_n6_loop, fixed_std_n6_loop)
+plt_data.append(round(fixed_mean_n6_loop, 2))
+
+fixed_mean_n4_loop, fixed_std_n4_loop = cal_mean_std(fn4)
+print(fixed_mean_n4_loop, fixed_std_n4_loop)
+plt_data.append(round(fixed_mean_n4_loop, 2))
+
+fixed_mean_n2_loop, fixed_std_n2_loop = cal_mean_std(fn2)
+print(fixed_mean_n2_loop, fixed_std_n2_loop)
+plt_data.append(round(fixed_mean_n2_loop, 2))
+
+fixed_mean_0_loop, fixed_std_0_loop = cal_mean_std(f0)
+print(fixed_mean_0_loop, fixed_std_0_loop)
+plt_data.append(round(fixed_mean_0_loop, 2))
+
+fixed_mean_2_loop, fixed_std_2_loop = cal_mean_std(f2)
+print(fixed_mean_2_loop, fixed_std_2_loop)
+plt_data.append(round(fixed_mean_2_loop, 2))
+
+fixed_mean_4_loop, fixed_std_4_loop = cal_mean_std(f4)
+print(fixed_mean_4_loop, fixed_std_4_loop)
+plt_data.append(round(fixed_mean_4_loop, 2))
+
+fixed_mean_6_loop, fixed_std_6_loop = cal_mean_std(f6)
+print(fixed_mean_6_loop, fixed_std_6_loop)
+plt_data.append(round(fixed_mean_6_loop, 2))
+
+fixed_mean_8_loop, fixed_std_8_loop = cal_mean_std(f8)
+print(fixed_mean_8_loop, fixed_std_8_loop)
+plt_data.append(round(fixed_mean_8_loop, 2))
+
+x_new = range(0, len(plt_data))
+plt.plot(x_new, plt_data, '-o')
+plt.ylim(120, 121)
+plt.show()
 # # 输出异常数据
 # print(error)
 # datac_np = np.array(data_c)

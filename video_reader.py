@@ -328,45 +328,52 @@ def stream_location(frame):
 def write_res_to_file(video_path, filename):
     # video_path = "video_-8.avi"
     capture = cv.VideoCapture(video_path)
+    total_frame = capture.get(cv.CAP_PROP_FRAME_COUNT)  # 视频的总帧数
     res_s_n8 = []
     counter = 0
-    while True:
-        ret, frame = capture.read()
+    for i in range(int(total_frame)):
+        ret = capture.grab()
         if not ret:
             break
-        res_s_n8 = stream_location(frame)
-        print(res_s_n8)
-        print("no. "+str(counter))
-        counter = counter + 1
-        with open(filename, 'a') as f:
-            for i in res_s_n8:
-                f.write(str(i) + ',')
-            f.write('\n')
-            res_s_n8.clear()
+        if i % 30 == 0:
+            ret, frame = capture.retrieve()
+            if ret:
+                res_s_n8 = stream_location(frame)
+                print(res_s_n8)
+                print(i)
+            else:
+                print("Error retrieving frame from movie!")
+                break
+        # counter = counter + 1
+            with open(filename, 'a') as f:
+                for n in res_s_n8:
+                    f.write(str(n) + ',')
+                f.write('\n')
+                res_s_n8.clear()
     cv.waitKey(-1)
 
 
 video_path_n8 = "video_-8.avi"
-str_name_n8 = "stream_n8.txt"
+str_name_n8 = "stream_n8_1.txt"
 video_path_n6 = "video_-6.avi"
-str_name_n6 = "stream_n6.txt"
+str_name_n6 = "stream_n6_1.txt"
 video_path_n4 = "video_-4.avi"
-str_name_n4 = "stream_n4.txt"
+str_name_n4 = "stream_n4_1.txt"
 video_path_n2 = "video_-2.avi"
-str_name_n2 = "stream_n2.txt"
+str_name_n2 = "stream_n2_1.txt"
 video_path_0 = "video_0.avi"
-str_name_0 = "stream_0.txt"
+str_name_0 = "stream_0_1.txt"
 video_path_2 = "video_2.avi"
-str_name_2 = "stream_2.txt"
+str_name_2 = "stream_2_1.txt"
 video_path_4 = "video_4.avi"
-str_name_4 = "stream_4.txt"
+str_name_4 = "stream_4_1.txt"
 video_path_6 = "video_6.avi"
-str_name_6 = "stream_6.txt"
+str_name_6 = "stream_6_1.txt"
 video_path_8 = "video_8.avi"
-str_name_8 = "stream_8.txt"
+str_name_8 = "stream_8_1.txt"
 
 
-# write_res_to_file(video_path_n8, str_name_n8)
+write_res_to_file(video_path_n8, str_name_n8)
 write_res_to_file(video_path_n6, str_name_n6)
 write_res_to_file(video_path_n4, str_name_n4)
 write_res_to_file(video_path_n2, str_name_n2)

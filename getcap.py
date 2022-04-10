@@ -56,8 +56,8 @@ start = -8
 
 while cam.isOpened():
 
-    saveVideoPath = 'video_' + str(start) + '.avi'
-    out = cv.VideoWriter(saveVideoPath, fourcc, 60.0, (1920, 1080))
+    saveVideoPath = 'video_1_' + str(start) + '.avi'
+    out = cv.VideoWriter(saveVideoPath, fourcc, 30.0, (1920, 1080))
 
     ret, frame = cam.read()
     show = frame.copy()
@@ -88,8 +88,9 @@ while cam.isOpened():
         img_counter += 1
     elif key == 118:
         # press v to save video (v ASCII value: 115)
+        print("writing begin")
         num_counter = 0
-        while num_counter <= 5400:
+        while num_counter <= 540:
             rets, frames = cam.read()
             cv.waitKey(1)
             out.write(frames)
@@ -128,7 +129,7 @@ while cam.isOpened():
             src = cv.flip(src, 1, dst=None)
 
         src = cv.bitwise_not(src=src)
-        ret1, src = cv.threshold(src, 28, 0, cv.THRESH_TOZERO)
+        ret1, src = cv.threshold(src, 38, 0, cv.THRESH_TOZERO)
         # ret2, src = cv.threshold(src, 35, 255, cv.THRESH_BINARY)
         test = cv.medianBlur(src, 3)
         # cv.namedWindow("original_image_1", cv.WINDOW_FREERATIO)
@@ -236,8 +237,8 @@ while cam.isOpened():
         #     dst6 = (dst4 + dst5) / 2
         #     num4.append(dst6)
 
-        space1 = np.linspace(0, 399, 400)
-        space2 = np.linspace(0, 99, 100)
+        # space1 = np.linspace(0, 399, 400)
+        # space2 = np.linspace(0, 99, 100)
         num2 = num2 + num4
         num1 = num1 + num3
         pointer2 = len(num2)
@@ -250,47 +251,47 @@ while cam.isOpened():
         # c, d = fit_line(num1, space1)
         # c = 1/c
         # d = -d/c
-        vi = []
-        vi_1 = []
-        num2_1 = []
-        vs_sum = 0
-        vs_sum_1 = 0
-        for i in range(0, len(num2)):
-            # vi.append(a*i+b - num2[i])
-            vs = line_fit(i, *popt1) - num2[i]
-            vs_sum = vs_sum + vs ** 2
-            vi.append(vs)
-        xi = np.linspace(0, len(num2) - 1, len(num2))
-        theta = (vs_sum / (len(num2) - 1)) ** 0.5
-        # print(theta)
-        # print(a, b)
-        # print(c, d)
-        #
-        # print(a, b)
-        # print(c, d)
-        for i in range(0, len(num2)):
-            # vi.append(a*i+b - num2[i])
-            vs_1 = line_fit(i, *popt1) - num2[i]
-            num2_1.append(num2[i])
-            if vs_1 > 3 * theta or vs_1 < -3 * theta:
-                num2_1.pop()
-                continue
-            vs_sum_1 = vs_sum_1 + vs_1 ** 2
-            vi_1.append(vs_1)
-        theta_v = (vs_sum_1 / (len(num2_1) - 1)) ** 0.5
-        # print(theta_v)
-        pointer_2 = len(num2_1)
-        pointer_3 = len(num1)
-        space3 = np.linspace(0, pointer_3 - 1, pointer_3)
-        space4 = np.linspace(0, pointer_2 - 1, pointer_2)
-        a1, b1, popt_1 = fit_line(num2_1, space4)
-        c1, d1, popt_2 = fit_line(num1, space3)
-        xi = np.linspace(0, len(num2_1) - 1, len(num2_1))
+        # vi = []
+        # vi_1 = []
+        # num2_1 = []
+        # vs_sum = 0
+        # vs_sum_1 = 0
+        # for i in range(0, len(num2)):
+        #     # vi.append(a*i+b - num2[i])
+        #     vs = line_fit(i, *popt1) - num2[i]
+        #     vs_sum = vs_sum + vs ** 2
+        #     vi.append(vs)
+        # xi = np.linspace(0, len(num2) - 1, len(num2))
+        # theta = (vs_sum / (len(num2) - 1)) ** 0.5
+        # # print(theta)
+        # # print(a, b)
+        # # print(c, d)
+        # #
+        # # print(a, b)
+        # # print(c, d)
+        # for i in range(0, len(num2)):
+        #     # vi.append(a*i+b - num2[i])
+        #     vs_1 = line_fit(i, *popt1) - num2[i]
+        #     num2_1.append(num2[i])
+        #     if vs_1 > 3 * theta or vs_1 < -3 * theta:
+        #         num2_1.pop()
+        #         continue
+        #     vs_sum_1 = vs_sum_1 + vs_1 ** 2
+        #     vi_1.append(vs_1)
+        # theta_v = (vs_sum_1 / (len(num2_1) - 1)) ** 0.5
+        # # print(theta_v)
+        # pointer_2 = len(num2_1)
+        # pointer_3 = len(num1)
+        # space3 = np.linspace(0, pointer_3 - 1, pointer_3)
+        # space4 = np.linspace(0, pointer_2 - 1, pointer_2)
+        # a1, b1, popt_1 = fit_line(num2_1, space4)
+        # c1, d1, popt_2 = fit_line(num1, space3)
+        # xi = np.linspace(0, len(num2_1) - 1, len(num2_1))
         # x = (d-b)/(a-c)
         # y =
 
-        x = (c1 * b1 + d1) / (1 - a1 * c1)
-        y = (a1 * d1 + b1) / (1 - a1 * c1)
+        x = (c * b + d) / (1 - a * c)
+        y = (a * d + b) / (1 - a * c)
 
         x = round(x, 1)
         y = round(y, 1)
@@ -391,8 +392,8 @@ while cam.isOpened():
     else:
         pass
 
-# np_cali_res = np.array(cali_res)
-# np.save('cali_theta_data.npy', np_cali_res)
+np_cali_res = np.array(cali_res)
+np.save('cali_theta_data_1.npy', np_cali_res)
 
 cam.release()
 cv.destroyAllWindows()

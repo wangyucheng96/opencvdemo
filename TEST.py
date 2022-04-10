@@ -4,6 +4,7 @@ from collections import deque
 from sklearn.metrics import mean_squared_error
 
 from fit import *
+from testfile import edgetest
 import numpy as np
 import cv2 as cv
 import matplotlib.pyplot as plt
@@ -13,6 +14,8 @@ import mat4py
 # # mat4py.loadmat('data/cross_img_20220119_12V.mat')
 # b = scio.loadmat('data/cross_img_20220119_12V.mat')
 # print(b)
+from testfile.edgetest import *
+
 ks = np.load('npdata/k.npy')
 k_x = ks[0][0]
 k_y = ks[0][1]
@@ -21,83 +24,57 @@ p = ks[0][3]
 h0 = ks[0][4]
 v_0 = ks[0][5]
 
-
-def img_d_noise(img):
-    num = 0
-    for i in range(1, img.shape[0]-1):
-        for j in range(1, img.shape[1]-1):
-            if img[i-1, j-1] > 0:
-                num = num + 1
-            if img[i, j-1] > 0:
-                num = num + 1
-            if img[i+1, j-1] > 0:
-                num = num + 1
-            if img[i-1, j] > 0:
-                num = num + 1
-            if img[i+1, j-1] > 0:
-                num = num + 1
-            if img[i-1, j+1] > 0:
-                num = num + 1
-            if img[i, j+1] > 0:
-                num = num + 1
-            if img[i+1, j+1] > 0:
-                num = num + 1
-            if num <= 4:
-                img[i, j] = 0
-    return img
-
-
 num1 = deque()
 num2 = deque()
 num3 = deque()
 num4 = deque()
-h1 = deque()
-h2 = deque()
-sum1 = 0
-sum2 = 0
-image = cv.imread("opencv_frame_4_0.png", 0)
-frame = image[0:1080, 3:1919]
-frame = cv.flip(frame, 1, dst=None)
-show = frame.copy()
-show = cv.rectangle(show, (450, 50), (1550, 1000), (152, 54, 255), 4, 4)
-cv.namedWindow("original_image_1", cv.WINDOW_FREERATIO)
-cv.imshow("original_image_1", show)
-frame = cv.bitwise_not(src=frame)
-# ret2, dst2 = cv.threshold(frame, 0, 255, cv.THRESH_OTSU)
-# cv.imshow("otsu", dst2)
-# for x in range(frame.shape[0]):   # 图片的高
-#     for y in range(frame.shape[1]):   # 图片的宽
-#         if frame[x, y] <= 15:
-#             frame[x, y] = 1
-frame0 = frame[0:500, 943:973]
-plt.hist(frame0.ravel(), 256, [0, 256])
-plt.show()
-ret1, img11 = cv.threshold(frame, 39, 0, cv.THRESH_TOZERO)
-print(ret1)
-# test = img_d_noise(img11)
-# ret2, test = cv.threshold(img11, 30, 255, cv.THRESH_BINARY)
-test = cv.medianBlur(img11, 3)
-cv.imshow("OORR", img11)
-cv.imshow("test", test)
-# lie
-for i in range(0, 1916):
-    for j in range(0, 1080):
-        sum1 = sum1 + test[j, i]
-    h1.append(sum1)
-    sum1 = 0
-# hang
-for i in range(0, 1080):
-    for j in range(0, 1916):
-        sum2 = sum2 + test[i, j]
-    h2.append(sum2)
-    sum2 = 0
-# for i in range(0, 1917):
-#         h2 = h2 + frame[:, i]
-v = np.argmax(h1)  # v = 311
-v0 = np.argmax(h2)  # v0 = 2
-print(v)
-print(v0)
-frameT = np.transpose(img11)
+# h1 = deque()
+# h2 = deque()
+# sum1 = 0
+# sum2 = 0
+# image = cv.imread("opencv_frame_4_0.png", 0)
+# frame = image[0:1080, 3:1919]
+# frame = cv.flip(frame, 1, dst=None)
+# show = frame.copy()
+# show = cv.rectangle(show, (450, 50), (1550, 1000), (152, 54, 255), 4, 4)
+# cv.namedWindow("original_image_1", cv.WINDOW_FREERATIO)
+# cv.imshow("original_image_1", show)
+# frame = cv.bitwise_not(src=frame)
+# # ret2, dst2 = cv.threshold(frame, 0, 255, cv.THRESH_OTSU)
+# # cv.imshow("otsu", dst2)
+# # for x in range(frame.shape[0]):   # 图片的高
+# #     for y in range(frame.shape[1]):   # 图片的宽
+# #         if frame[x, y] <= 15:
+# #             frame[x, y] = 1
+# frame0 = frame[0:500, 943:973]
+# plt.hist(frame0.ravel(), 256, [0, 256])
+# plt.show()
+# ret1, img11 = cv.threshold(frame, 39, 0, cv.THRESH_TOZERO)
+# print(ret1)
+# # test = img_d_noise(img11)
+# # ret2, test = cv.threshold(img11, 30, 255, cv.THRESH_BINARY)
+# test = cv.medianBlur(img11, 3)
+# cv.imshow("OORR", img11)
+# cv.imshow("test", test)
+# # lie
+# for i in range(0, 1916):
+#     for j in range(0, 1080):
+#         sum1 = sum1 + test[j, i]
+#     h1.append(sum1)
+#     sum1 = 0
+# # hang
+# for i in range(0, 1080):
+#     for j in range(0, 1916):
+#         sum2 = sum2 + test[i, j]
+#     h2.append(sum2)
+#     sum2 = 0
+# # for i in range(0, 1917):
+# #         h2 = h2 + frame[:, i]
+# v = np.argmax(h1)  # v = 311
+# v0 = np.argmax(h2)  # v0 = 2
+# print(v)
+# print(v0)
+# frameT = np.transpose(img11)
 # for i in range(2, 402):
 #     dst1 = gray_weight(frame, i, v)
 #     dst2 = gray_weight(frameT, i, v0)
@@ -106,17 +83,37 @@ frameT = np.transpose(img11)
 #     num1.append(dst1)
 #     num2.append(dst2)
 
-if v0 - 25 < 2 or v - 25 < 2:
-    print("too edge")
-for i in range(2, v0 - 25):
-    dst1 = gray_weight(img11, i, v)
+img = cv.imread('opencv_frame_4_7.png', 0)
+img = img[0:1080, 3:1919]
+# cv.imshow("0", img)
+img = cv.medianBlur(img, 3)
+# cv.imshow("i", img)
+
+# gray_img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+frame = cv.bitwise_not(src=img)
+# cv.imshow("gray", gray_img)
+
+# 2.canny边缘检测
+canny = cv.Canny(frame, 50, 110)
+
+a, b, c, d = find_zone(canny)
+t1 = find_t(frame, a, b)
+ret, img11 = cv.threshold(frame, t1, 0, cv.THRESH_TOZERO)
+print(t1)
+
+img_t = np.transpose(img11)
+
+# if v0 - 25 < 2 or v - 25 < 2:
+#     print("too edge")
+for i in range(0, 500):
+    dst1 = gray_weight_latest(img11, i, a, b)
     # dst2 = gray_weight2(frameT, i, v0)
     if np.isnan(dst1):
         continue
     num1.append(dst1)
-for i in range(2, v - 25):
+for i in range(0, 500):
     # dst1 = gray_weight(src, i, v)
-    dst2 = gray_weight2(frameT, i, v0)
+    dst2 = gray_weight_latest(img_t, i, c, d)
     if np.isnan(dst2):
         continue
     num2.append(dst2)
@@ -136,21 +133,21 @@ for i in range(2, v - 25):
 #         continue
 #     dst6 = (dst4 + dst5)/2
 #     num4.append(dst6)
-door1 = v0 + 450
-door2 = v + 410
-if v0+450 >= 1079:
+door1 = d + 450
+door2 = b + 410
+if d+450 >= 1079:
     door1 = 1079
-for i in range(v0 + 50, door1):
-    dst3 = gray_weight(img11, i, v)
+for i in range(d + 50, door1):
+    dst3 = gray_weight_latest(img11, i, a, b)
     # dst4 = gray_weight2(frameT, i, v0)
     if np.isnan(dst3):
         continue
     num3.append(dst3)
-if v+410 >= 1915:
+if b+410 >= 1915:
     door2 = 1915
-for i in range(v + 20, door2):
+for i in range(b + 20, door2):
     # dst1 = gray_weight(frame, i, v)
-    dst4 = gray_weight2(frameT, i, v0)
+    dst4 = gray_weight_latest(img_t, i, c, d)
     # dst5 = gray_weight_wide2(frameT, i, v0)
     if np.isnan(dst4):
         continue
@@ -203,6 +200,8 @@ print(a, b)
 print(c, d)
 mse = mean_squared_error(num2, predict)
 rmse = np.sqrt(mse)
+plt.plot(range(0, len(vi)), vi)
+plt.show()
 plt.figure(0)
 
 plt.plot(xi, num2, 'o')
@@ -234,13 +233,14 @@ print(len(predict_y))
 print(theta_1)
 mse_y = mean_squared_error(num1, predict_y)
 rmse_y = np.sqrt(mse_y)
-
+plt.plot(range(0, len(vi_y)), vi_y)
+plt.show()
 
 plt.figure(1)
 
 plt.plot(xi_y, num1, 'o')
 plt.plot(xi_y, y_predict_y)
-# plt.ylim(640, 660)
+plt.ylim(950, 960)
 plt.show()
 print("MSE_y :", mse_y)
 print("RMSE_y :", rmse_y)
@@ -305,12 +305,12 @@ print("RMSE :", rmse_1)
 plt.figure(3)
 plt.plot(xi_y_1, num_1_1, 'o')
 plt.plot(xi_y_1, y_predict_2)
-# plt.ylim(640, 660)
+plt.ylim(950, 960)
 plt.show()
 print("MSE :", mse_1_y)
 print("RMSE :", rmse_1_y)
-x = (c1 * b1 + d1) / (1 - a1 * c1)
-y = (a1 * d1 + b1) / (1 - a1 * c1)
+x = (c * b + d) / (1 - a * c)
+y = (a * d + b) / (1 - a * c)
 
 mean_num2 = np.mean(num2_1)
 S = 0
