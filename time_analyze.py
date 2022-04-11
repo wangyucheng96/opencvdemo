@@ -40,35 +40,35 @@ def read_data_from_file(filename):
 
 
 # print(x)
-filename_0 = "data/record_data0.txt"
-filename_2 = "data/record_data2.txt"
-filename_4 = "data/record_data4.txt"
-filename_6 = "data/record_data6.txt"
-filename_8 = "data/record_data8.txt"
-filename_n2 = "data/record_data-2.txt"
-filename_n4 = "data/record_data-4.txt"
-filename_n6 = "data/record_data-6.txt"
+# filename_0 = "data/record_data0.txt"
+# filename_2 = "data/record_data2.txt"
+# filename_4 = "data/record_data4.txt"
+# filename_6 = "data/record_data6.txt"
+# filename_8 = "data/record_data8.txt"
+# filename_n2 = "data/record_data-2.txt"
+# filename_n4 = "data/record_data-4.txt"
+# filename_n6 = "data/record_data-6.txt"
 
 filename_t_s = "data/record3.txt"
-file_stream_n8 = "stream_n8_1.txt"
-file_stream_n6 = "stream_n6_1.txt"
-file_stream_n4 = "stream_n4_1.txt"
-file_stream_n2 = "stream_n2_1.txt"
-file_stream_0 = "stream_0_1.txt"
-file_stream_2 = "stream_2_1.txt"
-file_stream_4 = "stream_4_1.txt"
-file_stream_6 = "stream_6_1.txt"
-file_stream_8 = "stream_8_1.txt"
+file_stream_n8 = "stream_n8.txt"
+file_stream_n6 = "stream_n6.txt"
+file_stream_n4 = "stream_n4.txt"
+file_stream_n2 = "stream_n2.txt"
+file_stream_0 = "stream_0.txt"
+file_stream_2 = "stream_2.txt"
+file_stream_4 = "stream_4.txt"
+file_stream_6 = "stream_6.txt"
+file_stream_8 = "stream_8.txt"
 
-
-x_0, y_0, delta_v_0 = read_data_from_file(filename_0)
-x_2, y_2, delta_v_2 = read_data_from_file(filename_2)
-x_4, y_4, delta_v_4 = read_data_from_file(filename_4)
-x_6, y_6, delta_v_6 = read_data_from_file(filename_6)
-x_8, y_8, delta_v_8 = read_data_from_file(filename_8)
-x_n2, y_n2, delta_v_n2 = read_data_from_file(filename_n2)
-x_n4, y_n4, delta_v_n4 = read_data_from_file(filename_n4)
-x_n6, y_n6, delta_v_n6 = read_data_from_file(filename_n6)
+#
+# x_0, y_0, delta_v_0 = read_data_from_file(file_stream_n8)
+# x_2, y_2, delta_v_2 = read_data_from_file(filename_2)
+# x_4, y_4, delta_v_4 = read_data_from_file(filename_4)
+# x_6, y_6, delta_v_6 = read_data_from_file(filename_6)
+# x_8, y_8, delta_v_8 = read_data_from_file(filename_8)
+# x_n2, y_n2, delta_v_n2 = read_data_from_file(filename_n2)
+# x_n4, y_n4, delta_v_n4 = read_data_from_file(filename_n4)
+# x_n6, y_n6, delta_v_n6 = read_data_from_file(filename_n6)
 #
 # x_ts, y_ts, delta_v_ts = read_data_from_file(filename_t_s)
 
@@ -82,9 +82,9 @@ x_stream_4, y_stream_4, delta_stream_4 = read_data_from_file(file_stream_4)
 x_stream_6, y_stream_6, delta_stream_6 = read_data_from_file(file_stream_6)
 x_stream_8, y_stream_8, delta_stream_8 = read_data_from_file(file_stream_8)
 
-# x_i_stream = range(0, len(delta_stream_n8))
-# plt.plot(x_i_stream, delta_stream_n8)
-# plt.show()
+x_i_stream = range(0, len(delta_stream_n8))
+plt.plot(x_i_stream, delta_stream_n8)
+plt.show()
 #
 # plt.plot(x_i_stream, delta_stream_n6)
 # plt.show()
@@ -111,14 +111,14 @@ x_stream_8, y_stream_8, delta_stream_8 = read_data_from_file(file_stream_8)
 #
 # plt.show()
 
-# L = len(delta_stream_8)  # 信号长度
-# N = np.power(2, np.ceil(np.log2(L)))  # 下一个最近二次幂
-# print(N)
-# yf = fft(delta_stream_8, int(N))
-# xf = fftfreq(int(N), 1 / 60)
-#
-# plt.plot(xf, np.abs(yf), '.')
-# plt.show()
+L = len(delta_stream_8)  # 信号长度
+N = np.power(2, np.ceil(np.log2(L)))  # 下一个最近二次幂
+print(N)
+yf = fft(delta_stream_8, int(N))
+xf = fftfreq(int(N), 1 / 60)
+logy = np.log(np.abs(yf))
+plt.plot(xf, logy, '-')
+plt.show()
 
 # print(x_0)
 # print(y_0)
@@ -307,25 +307,25 @@ f4 = three_sigma(delta_stream_4)
 f6 = three_sigma(delta_stream_6)
 f8 = three_sigma(delta_stream_8)
 
-ifn6 = three_sigma(delta_v_n6)
-ifn4 = three_sigma(delta_v_n4)
-ifn2 = three_sigma(delta_v_2)
-if0 = three_sigma(delta_v_0)
-if2 = three_sigma(delta_v_2)
-if4 = three_sigma(delta_v_4)
-if6 = three_sigma(delta_v_6)
-if8 = three_sigma(delta_v_8)
+# ifn6 = three_sigma(delta_v_n6)
+# ifn4 = three_sigma(delta_v_n4)
+# ifn2 = three_sigma(delta_v_2)
+# if0 = three_sigma(delta_v_0)
+# if2 = three_sigma(delta_v_2)
+# if4 = three_sigma(delta_v_4)
+# if6 = three_sigma(delta_v_6)
+# if8 = three_sigma(delta_v_8)
 
 for i in range(0, 30):
-    # fn8 = three_sigma(fn8)
-    fn6 = three_sigma(ifn6)
-    fn4 = three_sigma(ifn4)
-    fn2 = three_sigma(ifn2)
-    f0 = three_sigma(if0)
-    f2 = three_sigma(if2)
-    f4 = three_sigma(if4)
-    f6 = three_sigma(if6)
-    f8 = three_sigma(if8)
+    fn8 = three_sigma(fn8)
+    fn6 = three_sigma(fn6)
+    fn4 = three_sigma(fn4)
+    fn2 = three_sigma(fn2)
+    f0 = three_sigma(f0)
+    f2 = three_sigma(f2)
+    f4 = three_sigma(f4)
+    f6 = three_sigma(f6)
+    f8 = three_sigma(f8)
 
     # print(i)
 plt_data = []

@@ -28,6 +28,11 @@ num1 = deque()
 num2 = deque()
 num3 = deque()
 num4 = deque()
+
+x_num1 = []
+x_num2 = []
+x_num3 = []
+x_num4 = []
 # h1 = deque()
 # h2 = deque()
 # sum1 = 0
@@ -83,23 +88,26 @@ num4 = deque()
 #     num1.append(dst1)
 #     num2.append(dst2)
 
-img = cv.imread('opencv_frame_4_7.png', 0)
+img = cv.imread('opencv_frame_4_1.png', 0)
 img = img[0:1080, 3:1919]
 # cv.imshow("0", img)
-img = cv.medianBlur(img, 3)
+frame = cv.medianBlur(img, 3)
+frame = cv.GaussianBlur(frame,(3,3),0)
 # cv.imshow("i", img)
-
+# frame = img
 # gray_img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 frame = cv.bitwise_not(src=img)
 # cv.imshow("gray", gray_img)
 
 # 2.canny边缘检测
-canny = cv.Canny(frame, 50, 110)
-
-a, b, c, d = find_zone(canny)
+canny = cv.Canny(frame, 50, 130)
+# canny = cv.Pre
+prewitt = edgetest.prewitt(frame)
+cv.imshow("canny", prewitt)
+a, b, c, d = find_zone(prewitt)
 t1 = find_t(frame, a, b)
 ret, img11 = cv.threshold(frame, t1, 0, cv.THRESH_TOZERO)
-print(t1)
+print("thresh", t1)
 
 img_t = np.transpose(img11)
 
@@ -110,12 +118,14 @@ for i in range(0, 500):
     # dst2 = gray_weight2(frameT, i, v0)
     if np.isnan(dst1):
         continue
+    x_num1.append(i)
     num1.append(dst1)
 for i in range(0, 500):
     # dst1 = gray_weight(src, i, v)
     dst2 = gray_weight_latest(img_t, i, c, d)
     if np.isnan(dst2):
         continue
+    x_num2.append(i)
     num2.append(dst2)
 # for i in range(v0+50, v0+450):
 #     dst3 = gray_weight(frame, i, v)
@@ -142,15 +152,17 @@ for i in range(d + 50, door1):
     # dst4 = gray_weight2(frameT, i, v0)
     if np.isnan(dst3):
         continue
+    x_num3.append(i)
     num3.append(dst3)
-if b+410 >= 1915:
-    door2 = 1915
+if b+410 >= 1916:
+    door2 = 1916
 for i in range(b + 20, door2):
     # dst1 = gray_weight(frame, i, v)
     dst4 = gray_weight_latest(img_t, i, c, d)
     # dst5 = gray_weight_wide2(frameT, i, v0)
     if np.isnan(dst4):
         continue
+    x_num4.append(i)
     num4.append(dst4)
 
 point1 = len(num4)
@@ -166,13 +178,22 @@ space2 = np.linspace(0, 299, 300)
 # space4 = np.linspace(0, point1-1, point1)
 num2 = num2+num4
 num1 = num1+num3
+x_num2 = x_num2 + x_num4
+x_num1 = x_num1 + x_num3
+plt.plot(x_num1, num1, 'o')
+# plt.ylim(950, 960)
+plt.show()
+
+plt.plot(x_num2, num2, 'o')
+# plt.ylim(640, 660)
+plt.show()
 pointer2 = len(num2)
 print(pointer2)
 pointer3 = len(num1)
 space3 = np.linspace(0, pointer3-1, pointer3)
 space4 = np.linspace(0, pointer2-1, pointer2)
-a, b, popt1 = fit_line(num2, space4)
-c, d, popt2 = fit_line(num1, space3)
+a, b, popt1 = fit_line(num2, x_num2)
+c, d, popt2 = fit_line(num1, x_num1)
 # c = 1/c
 # d = -d/c
 vi = []
@@ -186,7 +207,7 @@ vs_sum_1 = 0
 for i in range(0, len(num2)):
     # vi.append(a*i+b - num2[i])
     # predict.append(line_fit(i, *popt1))
-    predict.append(a*i+b)
+    predict.append(a*x_num2[i]+b)
     # vs = line_fit(i, *popt1) - num2[i]
     vs = predict[i] - num2[i]
     vs_sum = vs_sum + vs**2
@@ -200,14 +221,15 @@ print(a, b)
 print(c, d)
 mse = mean_squared_error(num2, predict)
 rmse = np.sqrt(mse)
-plt.plot(range(0, len(vi)), vi)
-plt.show()
 plt.figure(0)
-
-plt.plot(xi, num2, 'o')
-plt.plot(xi, y_predict)
-plt.ylim(640, 660)
+plt.plot(x_num2, vi, 'o')
+# plt.ylim(650, 660)
 plt.show()
+
+# plt.plot(xi, num2, 'o')
+# plt.plot(xi, y_predict)
+# plt.ylim(640, 660)
+# plt.show()
 print("MSE :", mse)
 print("RMSE :", rmse)
 
@@ -221,7 +243,7 @@ vs_sum_y_1 = 0
 for i in range(0, len(num1)):
     # vi.append(a*i+b - num2[i])
     # predict.append(line_fit(i, *popt1))
-    predict_y.append(c*i+d)
+    predict_y.append(c*x_num1[i]+d)
     # vs = line_fit(i, *popt1) - num2[i]
     vs = predict_y[i] - num1[i]
     vs_sum_y = vs_sum_y + vs**2
@@ -233,15 +255,15 @@ print(len(predict_y))
 print(theta_1)
 mse_y = mean_squared_error(num1, predict_y)
 rmse_y = np.sqrt(mse_y)
-plt.plot(range(0, len(vi_y)), vi_y)
-plt.show()
-
 plt.figure(1)
-
-plt.plot(xi_y, num1, 'o')
-plt.plot(xi_y, y_predict_y)
-plt.ylim(950, 960)
+plt.plot(x_num1, vi_y, 'o')
+# plt.ylim(950, 960)
 plt.show()
+
+# plt.plot(xi_y, num1, 'o')
+# plt.plot(xi_y, y_predict_y)
+# plt.ylim(950, 960)
+# plt.show()
 print("MSE_y :", mse_y)
 print("RMSE_y :", rmse_y)
 

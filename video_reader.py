@@ -325,36 +325,55 @@ def stream_location(frame):
     # counter = counter + 1
 
 
-def write_res_to_file(video_path, filename):
+frame0 = np.zeros((1080, 1920, 3), np.uint16)
+
+
+def write_res_to_file(video_path, filename, frameo):
     # video_path = "video_-8.avi"
+
     capture = cv.VideoCapture(video_path)
     total_frame = capture.get(cv.CAP_PROP_FRAME_COUNT)  # 视频的总帧数
     res_s_n8 = []
     counter = 0
-    for i in range(int(total_frame)):
+    height = frameo.shape[0]
+    weight = frameo.shape[1]
+    channels = frameo.shape[2]
+    for i in range(int(5401)):
         ret = capture.grab()
         if not ret:
             break
-        if i % 30 == 0:
+        if i % 2 == 0 and i != 0:
             ret, frame = capture.retrieve()
             if ret:
-                res_s_n8 = stream_location(frame)
-                print(res_s_n8)
+                frameo = frameo + frame
+                # res_s_n8 = stream_location(frame)
+                # print(res_s_n8)
+                counter = counter +1
                 print(i)
             else:
                 print("Error retrieving frame from movie!")
                 break
         # counter = counter + 1
-            with open(filename, 'a') as f:
-                for n in res_s_n8:
-                    f.write(str(n) + ',')
-                f.write('\n')
-                res_s_n8.clear()
+        #     with open(filename, 'a') as f:
+        #         for n in res_s_n8:
+        #             f.write(str(n) + ',')
+        #         f.write('\n')
+        #         res_s_n8.clear()
+    # frame_res = int(frame0/counter)
+    frame_res = np.zeros((1080, 1920, 3), np.uint8)
+    for row in range(height):  # 遍历高
+        for col in range(weight):  # 遍历宽
+            for c in range(channels):  # 便利通道
+                pv = frameo[row, col, c]
+                # print(pv)
+                frame_res[row, col, c] = int(pv/counter)
+                # frame_res = frame_res.astype(np.uint8)
     cv.waitKey(-1)
+    return frame_res
 
 
 video_path_n8 = "video_-8.avi"
-str_name_n8 = "stream_n8_1.txt"
+str_name_n8_ss = "stream_n8_1.txt"
 video_path_n6 = "video_-6.avi"
 str_name_n6 = "stream_n6_1.txt"
 video_path_n4 = "video_-4.avi"
@@ -372,14 +391,17 @@ str_name_6 = "stream_6_1.txt"
 video_path_8 = "video_8.avi"
 str_name_8 = "stream_8_1.txt"
 
-
-write_res_to_file(video_path_n8, str_name_n8)
-write_res_to_file(video_path_n6, str_name_n6)
-write_res_to_file(video_path_n4, str_name_n4)
-write_res_to_file(video_path_n2, str_name_n2)
-write_res_to_file(video_path_0, str_name_0)
-write_res_to_file(video_path_2, str_name_2)
-write_res_to_file(video_path_4, str_name_4)
-write_res_to_file(video_path_6, str_name_6)
-write_res_to_file(video_path_8, str_name_8)
-
+f_n8_test = write_res_to_file(video_path_n8, str_name_n8_ss, frame0)
+cv.imshow("final", f_n8_test)
+cv.imwrite("sum.png", f_n8_test)
+# write_res_to_file(video_path_n8, str_name_n8)
+# write_res_to_file(video_path_n6, str_name_n6)
+# write_res_to_file(video_path_n4, str_name_n4)
+# write_res_to_file(video_path_n2, str_name_n2)
+# write_res_to_file(video_path_0, str_name_0)
+# write_res_to_file(video_path_2, str_name_2)
+# write_res_to_file(video_path_4, str_name_4)
+# write_res_to_file(video_path_6, str_name_6)
+# write_res_to_file(video_path_8, str_name_8)
+cv.waitKey()
+cv.destroyAllWindows()

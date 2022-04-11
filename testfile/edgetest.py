@@ -71,8 +71,8 @@ def find_zone(edge):
 
 def find_t(f, start, end):
     frame0 = f[0:300, start:end+1]
-    # plt.hist(frame0.ravel(), 256, [0, 256])
-    # plt.show()
+    plt.hist(frame0.ravel(), 256, [0, 256])
+    plt.show()
     ret1, img11 = cv.threshold(frame0, 0, 255, cv.THRESH_OTSU)
     # print(ret1)
     return ret1
@@ -107,6 +107,15 @@ def gray_weight_latest(image, i, start, end):
     return res
 
 
+def prewitt(image):
+    kernelx = np.array([[1, 1, 1], [0, 0, 0], [-1, -1, -1]], dtype=int)
+    kernely = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]], dtype=int)
+    x = cv.filter2D(image, cv.CV_16S, kernelx)
+    y = cv.filter2D(image, cv.CV_16S, kernely)
+    absX = cv.convertScaleAbs(x)
+    absY = cv.convertScaleAbs(y)
+    Prewitt = cv.addWeighted(absX, 0.5, absY, 0.5, 0)
+    return Prewitt
 # img_t = np.transpose(img11)
 # res = gray_weight_latest(img_t, 20, c, d)
 # print(res)
