@@ -221,12 +221,15 @@ def cal_mean_std(ls_0):
 
 
 def three_sigma(ls_0):
+    x = []
     u = cal_mean_std(ls_0)[0]
     std = cal_mean_std(ls_0)[1]
     df = pd.DataFrame(ls_0, columns=['value'])
     error = df[np.abs(df['value'] - u) > 2 * std]
     # 剔除异常值，保留正常的数据
     data_c = df[np.abs(df['value'] - u) < 3 * std]
+    for e in data_c:
+        x.append(data_c.index(e))
     return data_c
 
 
