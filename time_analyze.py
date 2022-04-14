@@ -82,6 +82,18 @@ x_stream_4, y_stream_4, delta_stream_4 = read_data_from_file(file_stream_4)
 x_stream_6, y_stream_6, delta_stream_6 = read_data_from_file(file_stream_6)
 x_stream_8, y_stream_8, delta_stream_8 = read_data_from_file(file_stream_8)
 
+mean_4_13_n8 = []
+sum_n8 = 0
+counter = 0
+for i in range(0, len(delta_stream_n8)):
+    counter = counter + 1
+    sum_n8 = sum_n8 + delta_stream_n8[i]
+    if counter % 10 == 0 and counter != 0:
+        mean_i = sum_n8 / 10
+        mean_4_13_n8.append(mean_i)
+        sum_n8 = 0
+
+plt.plot(range(0, len(mean_4_13_n8)), mean_4_13_n8)
 x_i_stream = range(0, len(delta_stream_n8))
 plt.plot(x_i_stream, delta_stream_n8)
 plt.show()
@@ -111,12 +123,12 @@ plt.show()
 #
 # plt.show()
 
-L = len(delta_stream_8)  # 信号长度
+L = len(delta_stream_n8)  # 信号长度
 N = np.power(2, np.ceil(np.log2(L)))  # 下一个最近二次幂
 print(N)
-yf = fft(delta_stream_8, int(N))
+yf = fft(delta_stream_n8, int(N))
 xf = fftfreq(int(N), 1 / 60)
-logy = np.log(np.abs(yf))
+logy = np.log2(np.abs(yf))
 plt.plot(xf, logy, '-')
 plt.show()
 

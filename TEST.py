@@ -1,6 +1,7 @@
 import math
 from collections import deque
 
+import cv2.cv2 as cv
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import mean_squared_error
@@ -10,6 +11,7 @@ from fit import *
 from testfile import edgetest
 from testfile.edgetest import *
 from testfile.ite_weight_fit import iter_weight_fit, ite_fit
+from erode_demo import *
 ks = np.load('npdata/k.npy')
 k_x = ks[0][0]
 k_y = ks[0][1]
@@ -82,33 +84,45 @@ x_num4 = []
 #     num1.append(dst1)
 #     num2.append(dst2)
 
-img = cv.imread('opencv_frame_4_0.png', 0)
-img = img[0:1080, 3:1919]
-# cv.imshow("0", img)
-frame = cv.medianBlur(img, 3)
-frame = cv.GaussianBlur(frame,(3,3),0)
-# cv.imshow("i", img)
-# frame = img
-# gray_img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-frame = cv.bitwise_not(src=img)
-# cv.imshow("gray", gray_img)
+# img = cv.imread('opencv_frame_4_1.png', 0)
+# img = img[0:1080, 3:1919]
+# # img = cv.imread('data/final_new_5m5_4.png', 0)
+# # cv.imshow("0", img)
+# frame = cv.medianBlur(img, 3)
+# frame = cv.GaussianBlur(frame,(3,3),0)
+# # cv.imshow("i", img)
+# # frame = img
+# # gray_img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+# frame = cv.bitwise_not(src=img)
+# # cv.imshow("gray", gray_img)
+# e_img = np.zeros((frame.shape[0], frame.shape[1], 1), dtype=np.uint16)
+# for i in range(e_img.shape[0]):
+#     for j in range(e_img.shape[1]):
+#         e_img[i, j] = math.pow(frame[i, j], math.e)
+# cv.normalize(e_img, e_img, 0, 255, cv.NORM_MINMAX)
+# gamma_img1 = cv.convertScaleAbs(e_img)
+# # 2.canny边缘检测
+# canny = cv.Canny(frame, 220, 250)
+# # canny = cv.Pre
+# prewitt = edgetest.prewitt(frame)
+# # cv.imshow("canny", prewitt)
+img_path = 'opencv_frame_4_5.png'
+frame0 = read_img_from_path(img_path)
+frame0 = stretch_gray(frame0, 2)
+ret, threshold_img = cv.threshold(frame0, 40, 255, cv.THRESH_BINARY)
+abs_img = edge_by_dilated(threshold_img)
+a, b, c, d = find_zone(abs_img)
+# t1 = find_t(frame, a, b)
+# ret, img11 = cv.threshold(frame, int(t1/2), 0, cv.THRESH_TOZERO)
+# test_img = img11[0:1080, a:b]
+# print("thresh", t1)
 
-# 2.canny边缘检测
-canny = cv.Canny(frame, 50, 130)
-# canny = cv.Pre
-prewitt = edgetest.prewitt(frame)
-# cv.imshow("canny", prewitt)
-a, b, c, d = find_zone(prewitt)
-t1 = find_t(frame, a, b)
-ret, img11 = cv.threshold(frame, 39, 0, cv.THRESH_TOZERO)
-print("thresh", t1)
-
-img_t = np.transpose(img11)
+img_t = np.transpose(frame0)
 
 # if v0 - 25 < 2 or v - 25 < 2:
 #     print("too edge")
 for i in range(0, 500):
-    dst1 = gray_weight_latest(img11, i, a, b)
+    dst1 = gray_weight_latest(frame0, i, a, b)
     # dst2 = gray_weight2(frameT, i, v0)
     if np.isnan(dst1):
         continue
@@ -141,8 +155,8 @@ door1 = d + 450
 door2 = b + 410
 if d+450 >= 1079:
     door1 = 1079
-for i in range(d + 50, door1):
-    dst3 = gray_weight_latest(img11, i, a, b)
+for i in range(d + 100, door1):
+    dst3 = gray_weight_latest(frame0, i, a, b)
     # dst4 = gray_weight2(frameT, i, v0)
     if np.isnan(dst3):
         continue
@@ -150,7 +164,7 @@ for i in range(d + 50, door1):
     num3.append(dst3)
 if b+410 >= 1916:
     door2 = 1916
-for i in range(b + 20, door2):
+for i in range(b + 100, door2):
     # dst1 = gray_weight(frame, i, v)
     dst4 = gray_weight_latest(img_t, i, c, d)
     # dst5 = gray_weight_wide2(frameT, i, v0)
@@ -205,7 +219,8 @@ for i in range(0, len(num2)):
     vs_sum = vs_sum + vs**2
     vi.append(abs(vs))
 
-ite_fit(x_num=x_num2, y_num=num2, max_ite=10)
+k2, b2 = ite_fit(x_num=x_num2, y_num=num2, max_ite=10)
+k1, b1 = ite_fit(x_num=x_num1, y_num=num1, max_ite=10)
 # vWeights = [1 for _ in range(len(x_num2))]
 # k, b = iter_weight_fit(x_num2, num2, vWeights)
 # predict00 = []
@@ -273,6 +288,17 @@ ite_fit(x_num=x_num2, y_num=num2, max_ite=10)
 #     plt.plot(x_num1, num1, 'o')
 #     plt.plot(x_num1, predict01)
 #     plt.show()
+
+s_1 = []
+s_2 = []
+for i in range(0, len(num1)):
+    s_1.append(k1*x_num1[i]+b1 - num1[i])
+for i in range(0, len(num2)):
+    s_2.append(k2*x_num2[i]+b2 - num2[i])
+plt.plot(range(0, len(s_1)), s_1)
+plt.show()
+plt.plot(range(0, len(s_2)), s_2)
+plt.show()
 
 
 xi = np.linspace(0, len(num2)-1, len(num2))
@@ -416,8 +442,11 @@ rmse_y = np.sqrt(mse_y)
 # plt.show()
 # print("MSE :", mse_1_y)
 # print("RMSE :", rmse_1_y)
-x = (c * b + d) / (1 - a * c)
-y = (a * d + b) / (1 - a * c)
+x = (k1 * b2 + b1) / (1 - k2 * k1)
+y = (k2 * b1 + b2) / (1 - k2 * k1)
+
+x0 = (c * b + d) / (1 - a * c)
+y0 = (a * d + b) / (1 - a * c)
 # y = a * x + b
 f1 = np.zeros((2, 1))
 f1[0][0] = x
@@ -432,6 +461,8 @@ v_h = np.dot(ki, f1)
 v_h[0][0] = v_h[0][0] + h0
 v_h[1][0] = v_h[1][0] + v_0
 print(str(x)+ ', '+ str(y))
+print(str(x0)+ ', '+ str(y0))
+
 print(v_h)
 v_res = np.deg2rad(v_h[0][0]/3600)
 h_res = np.deg2rad(v_h[1][0]/3600)
@@ -446,7 +477,7 @@ print(str(v_res)+ ', '+ str(h_res))
 # xi = np.linspace(0, len(num2)-1, len(num2))
 # theta = (vs_sum/(len(num2)-1))**0.5
 # print(theta)
-plt.plot(xi, vi_1)
+# plt.plot(xi, vi_1)
 plt.show()
 num1.clear()
 num2.clear()
@@ -460,36 +491,36 @@ num4.clear()
 # frame[int(y), int(x)-1] = 255
 center = (int(x), int(y))
 point_size = 1
-# point_color = (0, 0, 255) # BGR
+point_color = (0, 0, 255) # BGR
 thickness = 8 # 可以为 0 、4、8
 
-# cv.circle(frame, center, 3, point_color, thickness)
+cv.circle(frame0, center, 3, point_color, thickness)
 
-# cv.namedWindow("point", cv.WINDOW_FREERATIO)
-# cv.imshow("point", frame)
-# # cv.imwrite("data/res_p.png", frame)
-#
-# res_f = cv.cvtColor(frame, cv.COLOR_GRAY2RGB);
-#
-# ptStart = (0, int(b1))
-# ptEnd = (1917, int(1079*a1+b1))
-# point_color = (255, 0, 0) # BGR
-# thickness = 1
-# lineType = 4
-# cv.line(res_f, ptStart, ptEnd, point_color, thickness, lineType)
-# cv.circle(res_f, center, 5, (0, 0, 255), -1, 0)
-#
-# ptStart = (int(d1), 0)
-# ptEnd = (int(1079*c1+d1), 1079)
-# point_color = (0, 255, 0) # BGR
-# thickness = 1
-# lineType = 8
-# cv.line(res_f, ptStart, ptEnd, point_color, thickness, lineType)
+cv.namedWindow("point", cv.WINDOW_FREERATIO)
+cv.imshow("point", frame0)
+# cv.imwrite("data/res_p.png", frame)
+
+res_f = cv.cvtColor(frame0, cv.COLOR_GRAY2RGB);
+
+ptStart = (0, int(b2))
+ptEnd = (1917, int(1079*k2+b2))
+point_color = (255, 0, 0) # BGR
+thickness = 1
+lineType = 4
+cv.line(res_f, ptStart, ptEnd, point_color, thickness, lineType)
+cv.circle(res_f, center, 5, (0, 0, 255), -1, 0)
+
+ptStart = (int(b1), 0)
+ptEnd = (int(1079*k1+b1), 1079)
+point_color = (0, 255, 0) # BGR
+thickness = 1
+lineType = 8
+cv.line(res_f, ptStart, ptEnd, point_color, thickness, lineType)
 #
 # # cv.imwrite("data/res_f.png", res_f)
 # # res_f = cv.cvtColor(frame, cv.COLOR_GRAY2RGB);
-# cv.namedWindow("res", cv.WINDOW_FREERATIO)
-# cv.imshow("res", res_f)
+cv.namedWindow("res", cv.WINDOW_FREERATIO)
+cv.imshow("res", res_f)
 
 # # cv.imshow("grad_canny",canny)# canny = cv.Canny(image,15,128)
 # # cv.namedWindow("grad_canny",cv.WINDOW_FREERATIO)

@@ -58,10 +58,10 @@ def find_zone(edge):
     length1 = int(round((abs(j1 - i1) + 1), 0))
     length2 = int(round((abs(j2 - i2) + 1), 0))
     print(length2)
-    start1 = min(i1, j1) - length1
-    end1 = max(i1, j1) + length1
-    start2 = min(i2, j2) - length2
-    end2 = max(i2, j2) + length2
+    start1 = min(i1, j1) - 1*length1
+    end1 = max(i1, j1) + 1*length1
+    start2 = min(i2, j2) - 1*length2
+    end2 = max(i2, j2) + 1*length2
     return start1, end1, start2, end2
 
 
@@ -71,8 +71,8 @@ def find_zone(edge):
 
 def find_t(f, start, end):
     frame0 = f[0:300, start:end+1]
-    # plt.hist(frame0.ravel(), 256, [0, 256])
-    # plt.show()
+    plt.hist(frame0.ravel(), 256, [0, 256])
+    plt.show()
     ret1, img11 = cv.threshold(frame0, 0, 255, cv.THRESH_OTSU)
     # print(ret1)
     return ret1
@@ -89,7 +89,7 @@ def gray_weight_latest(image, i, start, end):
     #     T = pos
     # if pos + T/2 > img.shape[1]:
     #     T = img.shape[1] - pos
-    src = image[i][start: end+1]
+    src = image[i][start: end]
     # cv.imshow("before", src)
     # dst = cv.resize(src, dsize=(1, 60), interpolation=cv.INTER_LANCZOS4)
     # dst3 = np.transpose(dst)[0]

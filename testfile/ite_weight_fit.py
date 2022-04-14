@@ -45,17 +45,19 @@ def ite_fit(x_num, y_num, max_ite):
     for i in range(0, len(x_num)):
         predict00.append(k * x_num[i] + b)
     print("ko, bo ", k, b)
+    mse0 = mean_squared_error(y_num, predict00)
+    print("mse weight = 1: ", mse0)
     plt.plot(x_num, y_num, 'o')
-    plt.plot(x_num, predict00)
-    plt.show()
-    for k in range(0, max_ite):
+    plt.plot(x_num, predict00, color='green')
+    # plt.show()
+    for ite in range(0, max_ite):
         dist = []
         for i in range(0, len(x_num)):
             dist.append(abs(k * x_num[i] + b - y_num[i]))
         vi_copy = dist.copy()
         vi_copy.sort()
         sigma = vi_copy[int(len(vi_copy) / 2)] / 0.675
-        sigma = sigma * 2
+        sigma = sigma * 1
         vWeights.clear()
         for j in range(0, len(dist)):
             if dist[j] <= sigma:
@@ -69,8 +71,12 @@ def ite_fit(x_num, y_num, max_ite):
         predict001 = []
         for i in range(0, len(x_num)):
             predict001.append(k * x_num[i] + b)
-        mse = mean_squared_error(y_num, predict001)
-        plt.plot(x_num, y_num, 'o')
+        mse1 = mean_squared_error(y_num, predict001)
+        print("mse, ite = ", ite+1, ": ", mse1)
+        # plt.plot(x_num, y_num, 'o')
         plt.plot(x_num, predict001)
-        plt.show()
+    plt.show()
+    res_k = k
+    res_b = b
+    return k, b
 
