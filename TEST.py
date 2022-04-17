@@ -12,6 +12,7 @@ from testfile import edgetest
 from testfile.edgetest import *
 from testfile.ite_weight_fit import iter_weight_fit, ite_fit
 from erode_demo import *
+
 ks = np.load('npdata/k.npy')
 k_x = ks[0][0]
 k_y = ks[0][1]
@@ -107,11 +108,21 @@ x_num4 = []
 # prewitt = edgetest.prewitt(frame)
 # # cv.imshow("canny", prewitt)
 img_path = 'opencv_frame_4_5.png'
+# read a image from filepath
 frame0 = read_img_from_path(img_path)
+# enlarge the high gray_value
 frame0 = stretch_gray(frame0, 2)
+# two value of the image
 ret, threshold_img = cv.threshold(frame0, 40, 255, cv.THRESH_BINARY)
+threshold_img_copy = threshold_img.copy()
+# find th mid line if the image
+h1, v1 = find_mid_line(threshold_img_copy)
+# dilate the image
+# end1, end2 = find_end_point(threshold_img, h1, 1079)
+
 abs_img = edge_by_dilated(threshold_img)
-a, b, c, d = find_zone(abs_img)
+
+a, b, c, d = find_zone(abs_img, h1, v1)
 # t1 = find_t(frame, a, b)
 # ret, img11 = cv.threshold(frame, int(t1/2), 0, cv.THRESH_TOZERO)
 # test_img = img11[0:1080, a:b]
@@ -153,7 +164,7 @@ for i in range(0, 500):
 #     num4.append(dst6)
 door1 = d + 450
 door2 = b + 410
-if d+450 >= 1079:
+if d + 450 >= 1079:
     door1 = 1079
 for i in range(d + 100, door1):
     dst3 = gray_weight_latest(frame0, i, a, b)
@@ -162,7 +173,7 @@ for i in range(d + 100, door1):
         continue
     x_num3.append(i)
     num3.append(dst3)
-if b+410 >= 1916:
+if b + 410 >= 1916:
     door2 = 1916
 for i in range(b + 100, door2):
     # dst1 = gray_weight(frame, i, v)
@@ -182,8 +193,8 @@ print(point1)
 #     num2.append(dst2)
 # space3 = np.linspace(0, 499, 500)
 # space4 = np.linspace(0, point1-1, point1)
-num2 = num2+num4
-num1 = num1+num3
+num2 = num2 + num4
+num1 = num1 + num3
 x_num2 = x_num2 + x_num4
 x_num1 = x_num1 + x_num3
 # plt.plot(x_num1, num1, 'o')
@@ -213,10 +224,10 @@ vs_sum_1 = 0
 for i in range(0, len(num2)):
     # vi.append(a*i+b - num2[i])
     # predict.append(line_fit(i, *popt1))
-    predict.append(a*x_num2[i]+b)
+    predict.append(a * x_num2[i] + b)
     # vs = line_fit(i, *popt1) - num2[i]
     vs = predict[i] - num2[i]
-    vs_sum = vs_sum + vs**2
+    vs_sum = vs_sum + vs ** 2
     vi.append(abs(vs))
 
 k2, b2 = ite_fit(x_num=x_num2, y_num=num2, max_ite=10)
@@ -292,18 +303,17 @@ k1, b1 = ite_fit(x_num=x_num1, y_num=num1, max_ite=10)
 s_1 = []
 s_2 = []
 for i in range(0, len(num1)):
-    s_1.append(k1*x_num1[i]+b1 - num1[i])
+    s_1.append(k1 * x_num1[i] + b1 - num1[i])
 for i in range(0, len(num2)):
-    s_2.append(k2*x_num2[i]+b2 - num2[i])
+    s_2.append(k2 * x_num2[i] + b2 - num2[i])
 plt.plot(range(0, len(s_1)), s_1)
 plt.show()
 plt.plot(range(0, len(s_2)), s_2)
 plt.show()
 
-
-xi = np.linspace(0, len(num2)-1, len(num2))
-y_predict = a*xi + b
-theta_0 = (vs_sum/(len(num2)-1))**0.5
+xi = np.linspace(0, len(num2) - 1, len(num2))
+y_predict = a * xi + b
+theta_0 = (vs_sum / (len(num2) - 1)) ** 0.5
 print(len(predict))
 print(theta_0)
 print(a, b)
@@ -332,14 +342,14 @@ vs_sum_y_1 = 0
 for i in range(0, len(num1)):
     # vi.append(a*i+b - num2[i])
     # predict.append(line_fit(i, *popt1))
-    predict_y.append(c*x_num1[i]+d)
+    predict_y.append(c * x_num1[i] + d)
     # vs = line_fit(i, *popt1) - num2[i]
     vs = predict_y[i] - num1[i]
-    vs_sum_y = vs_sum_y + vs**2
+    vs_sum_y = vs_sum_y + vs ** 2
     vi_y.append(vs)
-xi_y = np.linspace(0, len(num1)-1, len(num1))
-y_predict_y = c*xi_y + d
-theta_1 = (vs_sum_y/(len(num1)-1))**0.5
+xi_y = np.linspace(0, len(num1) - 1, len(num1))
+y_predict_y = c * xi_y + d
+theta_1 = (vs_sum_y / (len(num1) - 1)) ** 0.5
 print(len(predict_y))
 print(theta_1)
 mse_y = mean_squared_error(num1, predict_y)
@@ -453,20 +463,20 @@ f1[0][0] = x
 f1[1][0] = y
 ki = np.zeros((2, 2))
 ki[0][0] = k_x
-ki[0][1] = k_x*p-k_y*theta
-ki[1][0] = k_x*theta
-ki[1][1] = k_x*theta*p - k_y
+ki[0][1] = k_x * p - k_y * theta
+ki[1][0] = k_x * theta
+ki[1][1] = k_x * theta * p - k_y
 
 v_h = np.dot(ki, f1)
 v_h[0][0] = v_h[0][0] + h0
 v_h[1][0] = v_h[1][0] + v_0
-print(str(x)+ ', '+ str(y))
-print(str(x0)+ ', '+ str(y0))
+print(str(x) + ', ' + str(y))
+print(str(x0) + ', ' + str(y0))
 
 print(v_h)
-v_res = np.deg2rad(v_h[0][0]/3600)
-h_res = np.deg2rad(v_h[1][0]/3600)
-print(str(v_res)+ ', '+ str(h_res))
+v_res = np.deg2rad(v_h[0][0] / 3600)
+h_res = np.deg2rad(v_h[1][0] / 3600)
+print(str(v_res) + ', ' + str(h_res))
 # vi = []
 # vs_sum = 0
 # for i in range(0, len(num2)):
@@ -491,8 +501,8 @@ num4.clear()
 # frame[int(y), int(x)-1] = 255
 center = (int(x), int(y))
 point_size = 1
-point_color = (0, 0, 255) # BGR
-thickness = 8 # 可以为 0 、4、8
+point_color = (0, 0, 255)  # BGR
+thickness = 8  # 可以为 0 、4、8
 
 cv.circle(frame0, center, 3, point_color, thickness)
 
@@ -503,16 +513,16 @@ cv.imshow("point", frame0)
 res_f = cv.cvtColor(frame0, cv.COLOR_GRAY2RGB);
 
 ptStart = (0, int(b2))
-ptEnd = (1917, int(1079*k2+b2))
-point_color = (255, 0, 0) # BGR
+ptEnd = (1917, int(1079 * k2 + b2))
+point_color = (255, 0, 0)  # BGR
 thickness = 1
 lineType = 4
 cv.line(res_f, ptStart, ptEnd, point_color, thickness, lineType)
 cv.circle(res_f, center, 5, (0, 0, 255), -1, 0)
 
 ptStart = (int(b1), 0)
-ptEnd = (int(1079*k1+b1), 1079)
-point_color = (0, 255, 0) # BGR
+ptEnd = (int(1079 * k1 + b1), 1079)
+point_color = (0, 255, 0)  # BGR
 thickness = 1
 lineType = 8
 cv.line(res_f, ptStart, ptEnd, point_color, thickness, lineType)

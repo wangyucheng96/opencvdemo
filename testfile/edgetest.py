@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 # cv.imshow("canny", canny)
 
 
-def find_zone(edge):
+def find_zone(edge, h_x, v_y):
     h1 = []
     h2 = []
     sum1 = 0
@@ -37,31 +37,37 @@ def find_zone(edge):
         h2.append(sum2)
         sum2 = 0
     # print(h1)
-    i1 = h1.index(max(h1))
-    i2 = h2.index(max(h2))
-    # print(len(h1))
-    # print(i)
-    h1.pop(i1)
-    h2.pop(i2)
-    # print(len(h1))
-    j1 = h1.index(max(h1))
-    if j1 >= i1:
-        j1 = j1 + 1
-    j2 = h2.index(max(h2))
-    if j2 >= i2:
-        j2 = j2 + 1
+    i1 = h1.index(max(h1[0: h_x]))
+    i1s = h1.index(max(h1[h_x: w]))
+
+    i2 = h2.index(max(h2[0: v_y]))
+    i2s = h2.index(max(h2[v_y: h]))
+
+    print(i1, i1s, i2, i2s)
+    # # print(len(h1))
+    # # print(i)
+    # h1.pop(i1)
+    # h2.pop(i2)
+    # # print(len(h1))
+    # j1 = h1.index(max(h1))
+    # if j1 >= i1:
+    #     j1 = j1 + 1
+    # j2 = h2.index(max(h2))
+    # if j2 >= i2:
+    #     j2 = j2 + 1
     # print(j)
     # # sorted(h1)
     # # sorted(h2)
     # print(h2)
-    print(i2, j2)
-    length1 = int(round((abs(j1 - i1) + 1), 0))
-    length2 = int(round((abs(j2 - i2) + 1), 0))
+    # print(i2, j2)
+    length1 = int(round((abs(i1s - i1) + 1)/2, 0))
+    length2 = int(round((abs(i2s - i2) + 1)/2, 0))
     print(length2)
-    start1 = min(i1, j1) - 1*length1
-    end1 = max(i1, j1) + 1*length1
-    start2 = min(i2, j2) - 1*length2
-    end2 = max(i2, j2) + 1*length2
+    start1 = min(i1, i1s) - 1*length1
+    end1 = max(i1, i1s) + 1*length1
+    start2 = min(i2, i2s) - 1*length2
+    end2 = max(i2, i2s) + 1*length2
+    print(start1, end1, start2, end2)
     return start1, end1, start2, end2
 
 
@@ -82,6 +88,8 @@ def find_t(f, start, end):
 # print(t1)
 # ret, img11 = cv.threshold(frame, t1, 0, cv.THRESH_TOZERO)
 
+global res
+
 
 def gray_weight_latest(image, i, start, end):
     # T = T1
@@ -89,6 +97,8 @@ def gray_weight_latest(image, i, start, end):
     #     T = pos
     # if pos + T/2 > img.shape[1]:
     #     T = img.shape[1] - pos
+    # global res
+    global res
     src = image[i][start: end]
     # cv.imshow("before", src)
     # dst = cv.resize(src, dsize=(1, 60), interpolation=cv.INTER_LANCZOS4)
@@ -102,7 +112,10 @@ def gray_weight_latest(image, i, start, end):
         if t == 0:
             # print("t==0")
             continue
-    res = start + weight / t
+    try:
+        res = start + weight / t
+    except ZeroDivisionError:
+        print("error: ZeroDivisionError t==0")
     # print("灰度重心法，第" + str(i) + "次： " + str(res))
     return res
 

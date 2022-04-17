@@ -1,6 +1,7 @@
 import cv2.cv2 as cv
 import numpy as np
 import math
+from skimage import morphology, draw
 
 
 def read_img_from_path(img_path):
@@ -38,19 +39,105 @@ def edge_by_dilated(threshold_frame):
     return absdiff_img
 
 
+def find_mid_line(threshold_img):
+    threshold_img[threshold_img == 255] = 1
+    skeleton0 = morphology.skeletonize(threshold_img)
+    skeleton = skeleton0.astype(np.uint8) * 255
+    h1 = []
+    h2 = []
+    sum1 = 0
+    sum2 = 0
+    h = skeleton.shape[0]
+    w = skeleton.shape[1]
+    for i in range(0, w):
+        for j in range(0, h):
+            sum1 = sum1 + skeleton[j, i]
+        h1.append(sum1)
+        sum1 = 0
+    # hang
+    for i in range(0, h):
+        for j in range(0, w):
+            sum2 = sum2 + skeleton[i, j]
+        h2.append(sum2)
+        sum2 = 0
+    # print(h1)
+    i1 = h1.index(max(h1))
+    i2 = h2.index(max(h2))
+    return i1, i2
+
+
 # retval, threshold_img = cv.threshold(absdiff_img, 45, 255, cv.THRESH_BINARY)
 # retval, threshold_img = cv.threshold(res, 40, 255, cv.THRESH_BINARY)
+def find_end_point(t_img, h_point, v_point, height, width):
+    record1 = []
+    record2 = []
+    for k in [-1, 0, 1]:
+        for i in range(1, height-1):
+            counter = 0
+            if t_img[i - 1, h_point+k - 1] > 0:
+                counter = counter + 1
+            if t_img[i - 1, h_point+k] > 0:
+                counter = counter + 1
+            if t_img[i - 1, h_point+k + 1] > 0:
+                counter = counter + 1
+            if t_img[i, h_point+k - 1] > 0:
+                counter = counter + 1
+            # if t_img[i, h_point] > 0:
+            #     counter = counter + 1
+            if t_img[i, h_point+k + 1] > 0:
+                counter = counter + 1
+            if t_img[i + 1, h_point+k - 1] > 0:
+                counter = counter + 1
+            if t_img[i + 1, h_point+k] > 0:
+                counter = counter + 1
+            if t_img[i + 1, h_point+k + 1] > 0:
+                counter = counter + 1
+            if 2 <= counter <= 4:
+                t_img[i, h_point+k] = 255
+                # print(i)
+                # print(counter)
+                # record1.append(i)
+    for q in [-1, 0, 1]:
+        for j in range(10, width - 1):
+            counter = 0
+            if t_img[v_point+q - 1, j - 1] > 0:
+                counter = counter + 1
+            if t_img[v_point+q - 1, j] > 0:
+                counter = counter + 1
+            if t_img[v_point+q - 1, j + 1] > 0:
+                counter = counter + 1
+            if t_img[v_point+q, j - 1] > 0:
+                counter = counter + 1
+            # if t_img[i, h_point] > 0:
+            #     counter = counter + 1
+            if t_img[v_point+q, j + 1] > 0:
+                counter = counter + 1
+            if t_img[v_point+q + 1, j - 1] > 0:
+                counter = counter + 1
+            if t_img[v_point+q + 1, j] > 0:
+                counter = counter + 1
+            if t_img[v_point+q + 1, j + 1] > 0:
+                counter = counter + 1
+            if 2 <= counter <= 4:
+                t_img[v_point+q, j] = 255
+                # print(i)
+                # print(counter)
+                # record2.append(j)
+    # return record1[0], record1[-1], record2[0], record2[-1]
 
-# if __name__ == '__main__':
-#     img_path_path = 'opencv_frame_4_0.png'
-#     frame0 = read_img_from_path(img_path_path)
-#     frame0 = stretch_gray(frame0, 2)
-#     ret, threshold_img = cv.threshold(frame0, 35, 255, cv.THRESH_BINARY)
-#     abs_img = edge_by_dilated(threshold_img)
-#     # cv.imshow("Eroded Image", eroded)
-#     # cv.imshow("Dilated Image", dilated)
-#     # cv.imshow("subtract", res)
-#     cv.imshow("diff", abs_img)
-#     # cv.imshow("t", threshold_img)
-#     cv.waitKey(0)
-#     cv.destroyAllWindows()
+
+if __name__ == '__main__':
+    img_path_path = 'opencv_frame_4_6.png'
+    frame0 = read_img_from_path(img_path_path)
+    frame0 = stretch_gray(frame0, 2)
+    ret, threshold_img = cv.threshold(frame0, 40, 255, cv.THRESH_BINARY)
+    find_end_point(threshold_img, 957, 654, 1079, 1900)
+    # print(end1, end2, end3, end4)
+    abs_img = edge_by_dilated(threshold_img)
+    # cv.imshow("Eroded Image", eroded)
+    # cv.imshow("Dilated Image", dilated)
+    # cv.imshow("subtract", res)
+    # cv.imshow("diff", abs_img)
+    # cv.imshow("t", threshold_img)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
