@@ -15,11 +15,11 @@ def iter_weight_fit(x_ls, y_ls, vweights):
         weight = vweights[i]
         x = x_ls[i]
         y = y_ls[i]
-        x1 = x1 + weight*x**2
-        x2 = x2 + weight*x
+        x1 = x1 + weight * x ** 2
+        x2 = x2 + weight * x
         x3 = x3 + weight
-        y1 = y1 + weight*x*y
-        y2 = y2 + weight*y
+        y1 = y1 + weight * x * y
+        y2 = y2 + weight * y
     G = np.zeros((2, 2))
     G[0, 0] = x1
     G[0, 1] = x2
@@ -47,8 +47,8 @@ def ite_fit(x_num, y_num, max_ite):
     print("ko, bo ", k, b)
     mse0 = mean_squared_error(y_num, predict00)
     print("mse weight = 1: ", mse0)
-    plt.plot(x_num, y_num, 'o')
-    plt.plot(x_num, predict00, color='green')
+    # plt.plot(x_num, y_num, 'o')
+    # plt.plot(x_num, predict00, color='green')
     # plt.show()
     for ite in range(0, max_ite):
         dist = []
@@ -72,11 +72,18 @@ def ite_fit(x_num, y_num, max_ite):
         for i in range(0, len(x_num)):
             predict001.append(k * x_num[i] + b)
         mse1 = mean_squared_error(y_num, predict001)
-        print("mse, ite = ", ite+1, ": ", mse1)
+        print("mse, ite = ", ite + 1, ": ", mse1)
         # plt.plot(x_num, y_num, 'o')
-        plt.plot(x_num, predict001)
-    plt.show()
+    #     plt.plot(x_num, predict001)
+    # plt.show()
     res_k = k
     res_b = b
     return k, b
 
+
+if __name__ == '__main__':
+    x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
+    y = np.array([1.2, 1.1, 1.0, 1.3, 1.4, 1.5, 1.2, 0.9, 2.3, 2.5, 2.4, 2.6, 1.2, 1.3, 1.1, 1.0, 1.1,
+                  1.2, 1.4, 1.5, 1.2, 1.2, 1.1, 1.4, 1.3, 1.2, 1.1, 1.2, 1.3, 1.2])
+    print(np.std(y))
+    ite_fit(x, y, 4)

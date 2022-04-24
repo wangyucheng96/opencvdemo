@@ -107,16 +107,40 @@ x_num4 = []
 # # canny = cv.Pre
 # prewitt = edgetest.prewitt(frame)
 # # cv.imshow("canny", prewitt)
-img_path = 'opencv_frame_4_5.png'
-# read a image from filepath
-frame0 = read_img_from_path(img_path)
-# enlarge the high gray_value
-frame0 = stretch_gray(frame0, 2)
+# img_path = 'opencv_frame_4_9.png'
+# # read a image from filepath
+# frame0 = read_img_from_path(img_path)
+# # plt.hist(frame0.flatten(), bins=256)
+# # plt.show()
+# # find_t(frame0, 953, 961, 1)
+# # enlarge the high gray_value
+# frame1 = stretch_gray(frame0, 2)
+# find_t(frame1, 953, 961, 2)
+#
+# frame2 = stretch_gray(frame0, 3)
+# find_t(frame2, 953, 961, 3)
+
+# frame3 = stretch_gray(frame0, 4)
+# find_t(frame3, 953, 961)
+
+# plt.hist(frame1.flatten(), bins=256)
+# plt.show()
+
+# plt.figure(1)
+# plt.hist(frame0.ravel(), 256, [0, 256])
+# plt.title("Gray Value Hist1")
+# plt.show()
 # two value of the image
+frame0 = cv.imread("data/final_new_5m5_4.png", 0)
 ret, threshold_img = cv.threshold(frame0, 40, 255, cv.THRESH_BINARY)
 threshold_img_copy = threshold_img.copy()
 # find th mid line if the image
-h1, v1 = find_mid_line(threshold_img_copy)
+rec0 = 300
+rec1 = 1400
+rec2 = 40
+rec3 = 1040
+h1, v1 = find_mid_line(threshold_img_copy, rec0, rec1, rec2, rec3)
+print("pixel: ", h1, v1)
 # dilate the image
 # end1, end2 = find_end_point(threshold_img, h1, 1079)
 
@@ -164,18 +188,18 @@ for i in range(0, 500):
 #     num4.append(dst6)
 door1 = d + 450
 door2 = b + 410
-if d + 450 >= 1079:
-    door1 = 1079
-for i in range(d + 100, door1):
+if v1 + 450 >= 1199:
+    door1 = 1199
+for i in range(v1 + 100, door1):
     dst3 = gray_weight_latest(frame0, i, a, b)
     # dst4 = gray_weight2(frameT, i, v0)
     if np.isnan(dst3):
         continue
     x_num3.append(i)
     num3.append(dst3)
-if b + 410 >= 1916:
-    door2 = 1916
-for i in range(b + 100, door2):
+if h1 + 410 >= 1599:
+    door2 = 1599
+for i in range(h1 + 100, door2):
     # dst1 = gray_weight(frame, i, v)
     dst4 = gray_weight_latest(img_t, i, c, d)
     # dst5 = gray_weight_wide2(frameT, i, v0)
@@ -350,8 +374,8 @@ for i in range(0, len(num1)):
 xi_y = np.linspace(0, len(num1) - 1, len(num1))
 y_predict_y = c * xi_y + d
 theta_1 = (vs_sum_y / (len(num1) - 1)) ** 0.5
-print(len(predict_y))
-print(theta_1)
+# print(len(predict_y))
+# print(theta_1)
 mse_y = mean_squared_error(num1, predict_y)
 rmse_y = np.sqrt(mse_y)
 # plt.figure(1)
@@ -470,8 +494,10 @@ ki[1][1] = k_x * theta * p - k_y
 v_h = np.dot(ki, f1)
 v_h[0][0] = v_h[0][0] + h0
 v_h[1][0] = v_h[1][0] + v_0
-print(str(x) + ', ' + str(y))
-print(str(x0) + ', ' + str(y0))
+
+print("weight =1 ", round(x0, 2), round(y0, 2))
+
+print("ite ", round(x, 2), round(y, 2))
 
 print(v_h)
 v_res = np.deg2rad(v_h[0][0] / 3600)

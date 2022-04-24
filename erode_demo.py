@@ -2,6 +2,7 @@ import cv2.cv2 as cv
 import numpy as np
 import math
 from skimage import morphology, draw
+import matplotlib.pyplot as plt
 
 
 def read_img_from_path(img_path):
@@ -23,6 +24,9 @@ def stretch_gray(frame, index=2):
             e_img[i, j] = math.pow(frame[i, j], index)
     cv.normalize(e_img, e_img, 0, 255, cv.NORM_MINMAX)
     gamma_img1 = cv.convertScaleAbs(e_img)
+    # plt.hist(gamma_img1.ravel(), 256, [0, 256])
+    # plt.title("Gray Value Hist1")
+    # plt.show()
     return gamma_img1
 
 
@@ -39,30 +43,38 @@ def edge_by_dilated(threshold_frame):
     return absdiff_img
 
 
-def find_mid_line(threshold_img):
-    threshold_img[threshold_img == 255] = 1
-    skeleton0 = morphology.skeletonize(threshold_img)
+def find_mid_line(threshold_image, p0, p1, p2, p3):
+    threshold_image[threshold_image == 255] = 1
+    skeleton0 = morphology.skeletonize(threshold_image)
     skeleton = skeleton0.astype(np.uint8) * 255
     h1 = []
     h2 = []
     sum1 = 0
     sum2 = 0
-    h = skeleton.shape[0]
-    w = skeleton.shape[1]
-    for i in range(0, w):
-        for j in range(0, h):
+    # h = skeleton.shape[0]
+    # w = skeleton.shape[1]
+    for i in range(p0, p1):
+        for j in range(p2, p3):
             sum1 = sum1 + skeleton[j, i]
         h1.append(sum1)
         sum1 = 0
     # hang
-    for i in range(0, h):
-        for j in range(0, w):
+    # plt.plot(range(300, len(h1)+300), h1)
+    # plt.xlabel("Position")
+    # plt.ylabel("Value of Gray")
+    # plt.show()
+    for i in range(p2, p3):
+        for j in range(p0, p1):
             sum2 = sum2 + skeleton[i, j]
         h2.append(sum2)
         sum2 = 0
     # print(h1)
-    i1 = h1.index(max(h1))
-    i2 = h2.index(max(h2))
+    # plt.plot(range(40, len(h2)+40), h2)
+    # plt.xlabel("Position")
+    # plt.ylabel("Value of Gray")
+    # plt.show()
+    i1 = h1.index(max(h1)) + 300
+    i2 = h2.index(max(h2)) + 40
     return i1, i2
 
 

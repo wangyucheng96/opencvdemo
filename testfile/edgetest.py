@@ -75,13 +75,19 @@ def find_zone(edge, h_x, v_y):
 # print(a, b, c, d)
 
 
-def find_t(f, start, end):
+def find_t(f, start, end, index):
     frame0 = f[0:300, start:end+1]
-    plt.hist(frame0.ravel(), 256, [0, 256])
+    plt.figure()
+    plt.hist(frame0.flatten(), bins=256)
+    plt.xlim(0, 256)
+    plt.xlabel("gray value")
+    plt.ylabel("number of pixels")
+    plt.title("Gray Value Hist")
+    plt.text(200, 175, "index = "+str(index))
     plt.show()
-    ret1, img11 = cv.threshold(frame0, 0, 255, cv.THRESH_OTSU)
+    # ret1, img11 = cv.threshold(frame0, 0, 255, cv.THRESH_OTSU)
     # print(ret1)
-    return ret1
+    # return ret1
 
 
 # t1 = find_t(frame, a, b)
