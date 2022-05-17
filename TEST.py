@@ -106,20 +106,20 @@ x_num4 = []
 # canny = cv.Canny(frame, 220, 250)
 # # canny = cv.Pre
 # prewitt = edgetest.prewitt(frame)
-# # cv.imshow("canny", prewitt)
-# img_path = 'opencv_frame_4_9.png'
-# # read a image from filepath
-# frame0 = read_img_from_path(img_path)
-# # plt.hist(frame0.flatten(), bins=256)
-# # plt.show()
-# # find_t(frame0, 953, 961, 1)
-# # enlarge the high gray_value
-# frame1 = stretch_gray(frame0, 2)
-# find_t(frame1, 953, 961, 2)
-#
+# cv.imshow("canny", prewitt)
+img_path = 'opencv_frame_4_9.png'
+# read a image from filepath
+frame0 = read_img_from_path(img_path)
+# plt.hist(frame0.flatten(), bins=256)
+# plt.show()
+# find_t(frame0, 953, 961, 1)
+# enlarge the high gray_value
+frame1 = stretch_gray(frame0, 2)
+find_t(frame1, 953, 961, 2)
+
 # frame2 = stretch_gray(frame0, 3)
 # find_t(frame2, 953, 961, 3)
-
+#
 # frame3 = stretch_gray(frame0, 4)
 # find_t(frame3, 953, 961)
 
@@ -130,8 +130,7 @@ x_num4 = []
 # plt.hist(frame0.ravel(), 256, [0, 256])
 # plt.title("Gray Value Hist1")
 # plt.show()
-# two value of the image
-frame0 = cv.imread("data/final_new_5m5_4.png", 0)
+# frame0 = cv.imread("data/final_new_5m5_4.png", 0)
 ret, threshold_img = cv.threshold(frame0, 40, 255, cv.THRESH_BINARY)
 threshold_img_copy = threshold_img.copy()
 # find th mid line if the image
@@ -188,8 +187,8 @@ for i in range(0, 500):
 #     num4.append(dst6)
 door1 = d + 450
 door2 = b + 410
-if v1 + 450 >= 1199:
-    door1 = 1199
+if v1 + 450 >= 1040:
+    door1 = 1040
 for i in range(v1 + 100, door1):
     dst3 = gray_weight_latest(frame0, i, a, b)
     # dst4 = gray_weight2(frameT, i, v0)
@@ -197,8 +196,8 @@ for i in range(v1 + 100, door1):
         continue
     x_num3.append(i)
     num3.append(dst3)
-if h1 + 410 >= 1599:
-    door2 = 1599
+if h1 + 410 >= 1400:
+    door2 = 1400
 for i in range(h1 + 100, door2):
     # dst1 = gray_weight(frame, i, v)
     dst4 = gray_weight_latest(img_t, i, c, d)
@@ -536,7 +535,7 @@ cv.namedWindow("point", cv.WINDOW_FREERATIO)
 cv.imshow("point", frame0)
 # cv.imwrite("data/res_p.png", frame)
 
-res_f = cv.cvtColor(frame0, cv.COLOR_GRAY2RGB);
+res_f = cv.cvtColor(frame0, cv.COLOR_GRAY2RGB)
 
 ptStart = (0, int(b2))
 ptEnd = (1917, int(1079 * k2 + b2))
