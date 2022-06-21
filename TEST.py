@@ -151,12 +151,12 @@ a, b, c, d = find_zone(abs_img, h1, v1)
 # test_img = img11[0:1080, a:b]
 # print("thresh", t1)
 
-img_t = np.transpose(frame0)
+img_t = np.transpose(frame1)
 
 # if v0 - 25 < 2 or v - 25 < 2:
 #     print("too edge")
 for i in range(0, 500):
-    dst1 = gray_weight_latest(frame0, i, a, b)
+    dst1 = gray_weight_latest(frame1, i, a, b)
     # dst2 = gray_weight2(frameT, i, v0)
     if np.isnan(dst1):
         continue
@@ -190,7 +190,7 @@ door2 = b + 410
 if v1 + 450 >= 1040:
     door1 = 1040
 for i in range(v1 + 100, door1):
-    dst3 = gray_weight_latest(frame0, i, a, b)
+    dst3 = gray_weight_latest(frame1, i, a, b)
     # dst4 = gray_weight2(frameT, i, v0)
     if np.isnan(dst3):
         continue

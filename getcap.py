@@ -1,4 +1,9 @@
 from fit import *
+from testfile.fit_fuc import *
+from testfile import edgetest
+from testfile.edgetest import *
+from testfile.ite_weight_fit import iter_weight_fit, ite_fit
+from erode_demo import *
 # 解决中文显示问题
 plt.rcParams['font.sans-serif'] = ['SimHei']
 plt.rcParams['axes.unicode_minus'] = False
@@ -42,21 +47,26 @@ n_s_i = 0
 counter = 0
 min_record = -8
 
-num1 = deque()
-num2 = deque()
-num3 = deque()
-num4 = deque()
+num1 = []
+num2 = []
+num3 = []
+num4 = []
+
+x_num1 = []
+x_num2 = []
+x_num3 = []
+x_num4 = []
 
 v_save = []
 cali_res = []
 
-fourcc = cv.VideoWriter_fourcc(*'MJPG')
+# fourcc = cv.VideoWriter_fourcc(*'MJPG')
 start = -8
 
 while cam.isOpened():
 
-    saveVideoPath = 'video_1_' + str(start) + '.avi'
-    out = cv.VideoWriter(saveVideoPath, fourcc, 30.0, (1920, 1080))
+    # saveVideoPath = 'video_1_' + str(start) + '.avi'
+    # out = cv.VideoWriter(saveVideoPath, fourcc, 30.0, (1920, 1080))
 
     ret, frame = cam.read()
     show = frame.copy()
@@ -85,17 +95,17 @@ while cam.isOpened():
         cv.imwrite(img_name, frame)
         print("{} written!".format(img_name))
         img_counter += 1
-    elif key == 118:
-        # press v to save video (v ASCII value: 115)
-        print("writing begin")
-        num_counter = 0
-        while num_counter <= 540:
-            rets, frames = cam.read()
-            cv.waitKey(1)
-            out.write(frames)
-            num_counter = num_counter + 1
-        start = start + 2
-        print("write is done")
+    # elif key == 118:
+    #     # press v to save video (v ASCII value: 115)
+    #     print("writing begin")
+    #     num_counter = 0
+    #     while num_counter <= 540:
+    #         rets, frames = cam.read()
+    #         cv.waitKey(1)
+    #         out.write(frames)
+    #         num_counter = num_counter + 1
+    #     start = start + 2
+    #     print("write is done")
     elif key == 32:
         # time.sleep(30)
         # t = 0

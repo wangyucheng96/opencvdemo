@@ -10,7 +10,7 @@ def read_img_from_path(img_path):
     img = original[0:1080, 3:1919]
     frame = cv.medianBlur(img, 3)
     frame = cv.GaussianBlur(frame, (3, 3), 0)
-    frame = cv.bitwise_not(src=img)
+    frame = cv.bitwise_not(src=frame)
     return frame
 
 
