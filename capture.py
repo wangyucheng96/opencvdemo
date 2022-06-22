@@ -26,8 +26,8 @@ cam.set(cv.CAP_PROP_FRAME_WIDTH, 1920)
 cam.set(cv.CAP_PROP_FRAME_HEIGHT, 1080)
 img_counter = 0
 
-ks = np.load('npdata/k.npy')
-kx_fix = np.load('npdata/theta_fix.npy')
+ks = np.load('./npdata/k_6_22.npy')
+kx_fix = np.load('./npdata/theta_fix.npy')
 
 k_x = ks[0][0]
 k_y = ks[0][1]
@@ -274,6 +274,7 @@ while cam.isOpened():
 
         cali_res_i = str(x) + ', ' + str(y)
         print(cali_res_i)
+        cali_res.append(cali_res_i)
 
         x0 = (c * b + d) / (1 - a * c)
         y0 = (a * d + b) / (1 - a * c)
@@ -342,11 +343,16 @@ while cam.isOpened():
         num3.clear()
         num4.clear()
 
+        x_num1.clear()
+        x_num2.clear()
+        x_num3.clear()
+        x_num4.clear()
+
     else:
         pass
 
 np_cali_res = np.array(cali_res)
-np.save('cali_theta_data_1.npy', np_cali_res)
+np.save('./npdata/cali_theta_data_1.npy', np_cali_res)
 
 cam.release()
 cv.destroyAllWindows()

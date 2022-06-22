@@ -104,7 +104,7 @@ def gray_weight_latest(image, i, start, end):
     # if pos + T/2 > img.shape[1]:
     #     T = img.shape[1] - pos
     # global res
-    global res
+    # global res
     src = image[i][start: end]
     # cv.imshow("before", src)
     # dst = cv.resize(src, dsize=(1, 60), interpolation=cv.INTER_LANCZOS4)
